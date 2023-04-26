@@ -1,40 +1,47 @@
+import { Bot } from "grammy";
 require("dotenv").config();
-import axios from "axios";
-import * as bodyParser from "body-parser";
-import express, { Express, Request, Response } from "express";
 
-const { BOT_TOKEN, SERVER_URL } = process.env;
+// Get your bot token from the environment variables.
+const BOT_TOKEN: string = process.env.BOT_TOKEN || "";
 
-const TELEGRAM_API: string = `https://api.telegram.org/bot${BOT_TOKEN}`;
-const URI: string = `/webhook/${BOT_TOKEN}`;
-const WEBHOOK_URL: string = SERVER_URL + URI;
+// Create an instance of the `Bot` class and pass your bot token to it.
+const bot = new Bot(BOT_TOKEN); // <-- put your bot token between the ""
 
-const app: Express = express();
-app.use(bodyParser.json());
+// You can now register listeners on your bot object `bot`.
+// grammY will call the listeners when users send messages to your bot.
 
-const init = async () => {
-  const res = await axios.get(`${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`);
-  console.log(res.data);
-};
+// Handle the /start command.
+bot.command("start", (ctx) => ctx.reply("Welcome! Up and running."));
+bot.command("help", (ctx) => ctx.reply("Help!"));
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
-});
+// Handle other messages.
+bot.on("message", (ctx) => {
+  // try {
+  const chatId = ctx.message.chat.id;
+  const msgId: number = ctx.message.message_id;
+  const text = ctx.message.text;
+  let username = ctx.message.from.username;
 
-app.post(URI, async (req: Request, res: Response) => {
-  console.log(req.body);
+  // if username is undefined, use first_name
+  if (username === undefined) {
+    username = ctx.message.from.first_name;
+  }
 
-  const chatId = req.body.message.chat.id;
-  const text = req.body.message.text;
+  // use regex to clean username of special characters
+  username = username.replace(/[^a-zA-Z0-9]/g, "");
 
-  await axios.post(`${TELEGRAM_API}/sendMessage`, {
-    chat_id: chatId,
-    text: text,
+  // templates for sending messages
+  const textToSend = `You said: ${text} and your username is ${username}`;
+  const markdownToSend = `You said: *${text}* and your username is ${username}`;
+
+  ctx.reply(markdownToSend, {
+    reply_to_message_id: msgId,
+    parse_mode: "MarkdownV2",
   });
-  return res.send();
 });
 
-app.listen(process.env.PORT || 5000, async () => {
-  console.log("🚀 app running on port", process.env.PORT || 5000);
-  await init();
-});
+// Now that you specified how to handle messages, you can start your bot.
+// This will connect to the Telegram servers and wait for messages.
+
+// Start the bot.
+bot.start();

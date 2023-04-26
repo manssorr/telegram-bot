@@ -30,9 +30,9 @@ require("dotenv").config();
 const axios_1 = __importDefault(require("axios"));
 const bodyParser = __importStar(require("body-parser"));
 const express_1 = __importDefault(require("express"));
-const { TOKEN, SERVER_URL } = process.env;
-const TELEGRAM_API = `https://api.telegram.org/bot${TOKEN}`;
-const URI = `/webhook/${TOKEN}`;
+const { BOT_TOKEN, SERVER_URL } = process.env;
+const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}`;
+const URI = `/webhook/${BOT_TOKEN}`;
 const WEBHOOK_URL = SERVER_URL + URI;
 const app = (0, express_1.default)();
 app.use(bodyParser.json());
@@ -40,6 +40,9 @@ const init = async () => {
     const res = await axios_1.default.get(`${TELEGRAM_API}/setWebhook?url=${WEBHOOK_URL}`);
     console.log(res.data);
 };
+app.get("/", (req, res) => {
+    res.send("Express + TypeScript Server");
+});
 app.post(URI, async (req, res) => {
     console.log(req.body);
     const chatId = req.body.message.chat.id;

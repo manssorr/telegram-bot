@@ -4,18 +4,13 @@ import {
 } from "@grammyjs/auto-chat-action";
 import dotenv from "dotenv";
 import express, { Express, Request, Response } from "express";
-import { Bot, Context } from "grammy";
+import { Bot, Context, webhookCallback } from "grammy";
 import fetch from "node-fetch";
 import translate from "translate";
 
 (globalThis as any).fetch = fetch;
 
 dotenv.config();
-const app: Express = express();
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
-});
 
 // Get your bot token from the environment variables.
 const BOT_TOKEN: string = process.env.BOT_TOKEN || "";
@@ -231,4 +226,23 @@ bot.on("message", async (ctx) => {
 // This will connect to the Telegram servers and wait for messages.
 
 // Start the bot.
-bot.start();
+// Start the server
+if (process.env.NODE_ENV === "production") {
+  // Use Webhooks for the production server
+  const app: Express = express();
+  app.use(express.json());
+  app.use(webhookCallback(bot, "express"));
+
+  const PORT = process.env.PORT || 5000;
+
+  app.get("/", (req: Request, res: Response) => {
+    res.send("https://t.me/man_ssorr");
+  });
+
+  app.listen(PORT, () => {
+    console.log(`Bot listening on port ${PORT}`);
+  });
+} else {
+  // Use Long Polling for development
+  bot.start();
+}

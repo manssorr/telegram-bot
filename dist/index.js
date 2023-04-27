@@ -1,10 +1,15 @@
 import { autoChatAction, } from "@grammyjs/auto-chat-action";
 import dotenv from "dotenv";
+import express from "express";
 import { Bot } from "grammy";
 import fetch from "node-fetch";
-globalThis.fetch = fetch;
 import translate from "translate";
+globalThis.fetch = fetch;
 dotenv.config();
+const app = express();
+app.get("/", (req, res) => {
+    res.send("Express + TypeScript Server");
+});
 // Get your bot token from the environment variables.
 const BOT_TOKEN = process.env.BOT_TOKEN || "";
 const bot = new Bot(BOT_TOKEN); // <-- put your bot token between the ""

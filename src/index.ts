@@ -18,6 +18,11 @@ const BOT_TOKEN: string = process.env.BOT_TOKEN || "";
 type MyContext = Context & AutoChatActionFlavor;
 const bot = new Bot<MyContext>(BOT_TOKEN); // <-- put your bot token between the ""
 
+// get / hello world
+bot.command("hello", async (ctx) => {
+  await ctx.reply("Hello World");
+});
+
 // install plugins
 
 // auto chat action plugin

@@ -8,6 +8,10 @@ dotenv.config();
 // Get your bot token from the environment variables.
 const BOT_TOKEN = process.env.BOT_TOKEN || "";
 const bot = new Bot(BOT_TOKEN); // <-- put your bot token between the ""
+// get / hello world
+bot.command("hello", async (ctx) => {
+    await ctx.reply("Hello World");
+});
 // install plugins
 // auto chat action plugin
 bot.use(autoChatAction());

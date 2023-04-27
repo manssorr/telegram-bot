@@ -2,7 +2,7 @@
   "name": "telegram-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "dist/app.js",
   "type": "module",
   "dependencies": {
     "@grammyjs/auto-chat-action": "^0.1.1",
@@ -12,12 +12,14 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "grammy": "^1.16.0",
+    "lodash": "^4.17.21",
     "node-fetch": "^3.3.1",
     "translate": "^2.0.2"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.2",
     "@types/express": "^4.17.17",
+    "@types/lodash": "^4.14.194",
     "@types/node": "^18.16.1",
     "nodemon": "^2.0.4",
     "ts-node": "^10.9.1",
@@ -27,10 +29,10 @@
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "export DEBUG=\"grammy*\" && node dist/index.js",
+    "start": "export DEBUG=\"grammy*\" && node dist/app.js",
     "ngrok": "ngrok http 5000",
     "tsw": "npx tsc --watch",
-    "dev": "nodemon --exec node --loader ts-node/esm src/index.ts"
+    "dev": "nodemon --exec node --loader ts-node/esm src/app.ts"
   },
   "author": "Mansour Koura",
   "license": "ISC"
